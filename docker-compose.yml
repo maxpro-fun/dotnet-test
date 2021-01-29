@@ -1,0 +1,26 @@
+version: "3"
+services:
+  api:
+    container_name: api
+    working_dir: /app
+    build:
+      context: .
+      target: debug
+    volumes:
+      - ./src/app:/app
+      - /app/obj/
+      - /app/bin/
+    ports:
+      - "5000:5000"
+    depends_on:
+      - database
+  database:
+    image: "postgres" # use latest official postgres version
+    env_file:
+      - database.env # configure postgres
+    volumes:
+      - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+    ports:
+      - "5432:5432"
+volumes:
+  database-data: # named volumes can be managed easier using docker-compose
